@@ -15,14 +15,51 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
+#include <fstream>
+#include <string>
+#include <cstring>
 
 using namespace std;
 
+
+
+string Classificar(ifstream& B, ifstream& X, int k){
+    string base, x;
+    double numX, numBase, dif;
+    //while(getline(X, x, ',')){
+        while(getline(B, base, ',')){     
+            //if(::atof(x.c_str())){
+             //   numX = ::atof(x.c_str());
+              //  numBase = ::atof(base.c_str());
+               // cout<<numBase<<"\n";
+            //}
+            cout<<base<<"\n";
+        }
+            
+    //}
+    //Obter as classes das k menores distâncias
+    //Retornar a classe que mais apareceu dentre as k classes obtidas
+}
 /*
  * 
  */
 int main(int argc, char** argv) {
-    cout<<"Oi Brunao";
+    string nomeArqB, nomeArqX;
+    ifstream B, X;
+ 
+    nomeArqB = "test_59.data";
+    nomeArqX = "train_59.data";
+    
+    B.open(nomeArqB.c_str());
+    X.open(nomeArqX.c_str());
+    
+    if(!B.is_open() || !X.is_open())
+        return 0;
+    
+    Classificar(B, X, 1);
+    
+    B.close();
+    X.close();
+    
     return 0;
 }
-
