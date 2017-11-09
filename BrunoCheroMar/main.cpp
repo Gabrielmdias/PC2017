@@ -25,30 +25,28 @@ using namespace std;
 
 string Classificar(ifstream& B, ifstream& X, int k){
     string base, x;
-    double numX, numBase, dif;
-    //while(getline(X, x, ',')){
+    double numX = 0, numBase, dif;
+    while(getline(X, x, ',')){
         while(getline(B, base, ',')){     
-            //if(::atof(x.c_str())){
-             //   numX = ::atof(x.c_str());
-              //  numBase = ::atof(base.c_str());
-               // cout<<numBase<<"\n";
-            //}
-            cout<<base<<"\n";
-        }
+            if(::atof(base.c_str())>0){
+                numX = ::atof(x.c_str());
+                numBase = ::atof(base.c_str());
+                cout<<::atof(base.c_str())<<"\n";
+            }
+           
             
-    //}
+        }        
+    }
     //Obter as classes das k menores distâncias
-    //Retornar a classe que mais apareceu dentre as k classes obtidas
-}
+    return "a classe que mais apareceu dentre as k classes obtidas";
+    }
 /*
  * 
  */
 int main(int argc, char** argv) {
-    string nomeArqB, nomeArqX;
+    string nomeArqB = "test_59.data",
+           nomeArqX = "train_59.data";
     ifstream B, X;
- 
-    nomeArqB = "test_59.data";
-    nomeArqX = "train_59.data";
     
     B.open(nomeArqB.c_str());
     X.open(nomeArqX.c_str());
