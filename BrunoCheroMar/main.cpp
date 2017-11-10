@@ -5,10 +5,8 @@
  */
 
 /* 
- * File:   main.cpp
- * Author: gabriel
+ * Author: BrunoCheroMariana
  *
- * Created on 31 de Outubro de 2017, 20:34
  */
 
 #include <cstdlib>
@@ -18,30 +16,63 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include <math.h>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 
+struct classificacao{
+    int distancia;
+    string classe;
+};
 
 
-string Classificar(ifstream& B, ifstream& X, int k){
+
+void insertionSort(classificacao maisVotadas[], classificacao c, int k){
+    int i;
+    
+    for(int j = 1; j < k; j){        
+        classificacao key = maisVotadas[j];
+        for(i = j-1; (i > -1) && (maisVotadas[i].distancia < key.distancia); i--){
+            maisVotadas[i+1] = maisVotadas[i];
+        }
+        maisVotadas[i+1] = key;
+    }
+}
+
+string classificar(ifstream& B, ifstream& X, int k){
     string strB, strX;
     double numB, numX, dif;
-
+    int posB = B.tellg(),
+        posX = X.tellg();
+    //classificacao maisVotadas[k];
+    std::vector<classificacao> maisVotadas;
+    maisVotadas.resize(k);
+    
     do {
+        classificacao c;
+        
+        B.seekg(posB);        
         do {
             getline(B, strB, ',');
             getline(X, strX, ',');
-            numB = atof(strB.c_str());
-            numX = atof(strX.c_str());
+            if (!(numB = atof(strB.c_str())))
+                c.classe = strB;
+            numX = atof(strX.c_str());                
+
+            c.distancia += pow(numB - numX, 2);            
         } while (numX > 0);
-    } while
+        
+        maisVotadas.insert(0, c);
+        
+            
+    } while (numX > 0);
 
     //Obter as classes das k menores distâncias
-    return "a classe que mais apareceu dentre as k classes obtidas";
-    }
-/*
- * 
- */
+    return "oooi";
+}
+
 int main(int argc, char** argv) {
     string nomeArqB = "train_59.data",
            nomeArqX = "test_59.data";
@@ -53,7 +84,7 @@ int main(int argc, char** argv) {
     if(!B.is_open() || !X.is_open())
         return 0;
     
-    Classificar(B, X, 1);
+    cout << classificar(B, X, 10);
     
     B.close();
     X.close();
