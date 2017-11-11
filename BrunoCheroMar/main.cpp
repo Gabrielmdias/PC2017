@@ -19,11 +19,12 @@
 #include <math.h>
 #include <algorithm>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 
 struct classificacao{
-    int distancia;
+    double distancia;
     string classe;
 };
 
@@ -31,6 +32,9 @@ struct classificacao{
 
 void insertionSort(classificacao maisVotadas[], classificacao c, int k){
     int i;
+    
+    //if (c.distancia < maisVotadas[k].distancia)
+      //  swap(c, maisVotadas[k]);    
     
     for(int j = 1; j < k; j){        
         classificacao key = maisVotadas[j];
@@ -42,35 +46,36 @@ void insertionSort(classificacao maisVotadas[], classificacao c, int k){
 }
 
 string classificar(ifstream& B, ifstream& X, int k){
-    string strB, strX;
-    double numB, numX, dif;
-    int posB = B.tellg(),
-        posX = X.tellg();
-    //classificacao maisVotadas[k];
-    std::vector<classificacao> maisVotadas;
-    maisVotadas.resize(k);
-    
-    do {
-        classificacao c;
+    string lineB, lineX;    
         
-        B.seekg(posB);        
-        do {
-            getline(B, strB, ',');
-            getline(X, strX, ',');
-            if (!(numB = atof(strB.c_str())))
-                c.classe = strB;
-            numX = atof(strX.c_str());                
+    while(getline(X, lineX)){
+        std::stringstream strX(lineX);
+        int i = strX.tellg();
+        
+        while(getline(B, lineB)){
+            std::stringstream strB(lineB);
+
+            strX.seekg(i);
+            
+            string attrB, attrX;
+            getline(strB, attrB, ',');
+            getline(strX, attrX, ',');
+
+            classificacao c;
+            double numB, numX, dif;
+            if (!(numB = atof(attrB.c_str()))){
+                c.classe = attrB;
+                cout<<"Classe :"<<attrB;
+            }
+            numX = atof(attrX.c_str());                
 
             c.distancia += pow(numB - numX, 2);            
-        } while (numX > 0);
-        
-        maisVotadas.insert(0, c);
-        
             
-    } while (numX > 0);
-
-    //Obter as classes das k menores distâncias
-    return "oooi";
+           // cout << numB << " - " << numX  << "\n";
+        }
+    
+    }
+    return "\n";
 }
 
 int main(int argc, char** argv) {
