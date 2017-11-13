@@ -10,16 +10,16 @@
  */
 
 #include <cstdlib>
+#include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include <stdlib.h>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <cstring>
 #include <math.h>
 #include <algorithm>
 #include <vector>
-#include <sstream>
 
 using namespace std;
 
@@ -46,34 +46,38 @@ void insertionSort(classificacao maisVotadas[], classificacao c, int k){
 }
 
 string classificar(ifstream& B, ifstream& X, int k){
-    string lineB, lineX;    
+    int nro = 1;
+    
+                classificacao c;
+    string lineX;
+    while(getline(X, lineX)){    
+        std::stringstream strX(lineX); 
         
-    while(getline(X, lineX)){
-        std::stringstream strX(lineX);
-        int i = strX.tellg();
-        
+        string lineB;
         while(getline(B, lineB)){
             std::stringstream strB(lineB);
-
-            strX.seekg(i);
             
-            string attrB, attrX;
-            getline(strB, attrB, ',');
-            getline(strX, attrX, ',');
+            string attrB, attrX;            
+            while (getline(strX, attrX, ',')){
+                   getline(strB, attrB, ',');                
 
-            classificacao c;
-            double numB, numX, dif;
-            if (!(numB = atof(attrB.c_str()))){
-                c.classe = attrB;
-                cout<<"Classe :"<<attrB;
+                double  numX = atof(attrX.c_str()),
+                        numB = atof(attrB.c_str());
+                
+                if (numX)
+                    c.distancia += pow(numB - numX, 2);
+                else
+                    c.classe = attrB.c_str();
             }
-            numX = atof(attrX.c_str());                
-
-            c.distancia += pow(numB - numX, 2);            
             
-           // cout << numB << " - " << numX  << "\n";
+            strX.clear();
+            strX.seekg(strX.beg);
         }
-    
+        cout << "CLASS."<< nro++ << ": " << c.distancia << "|" << c.classe << "\n";        
+        cin.ignore();
+        
+        B.clear();
+        B.seekg(B.beg);
     }
     return "\n";
 }
