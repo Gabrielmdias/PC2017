@@ -28,30 +28,37 @@ struct classificacao{
     string classe;
 };
 
+int show (classificacao v[], int k){
+    cout << "topK [";
+    for (int i = 0; i < k; i++)
+        std::printf(" %.1f ", v[i].distancia);
+    cout << "]\n";
+}
 
-
-void insertionSort(classificacao maisVotadas[], classificacao c, int k){
-    int i;
+void insortion(classificacao v[], classificacao c, int k){
+    cout << c.distancia << ", " << c.classe << endl;
+    if (c.distancia > v[k].distancia)
+        v[k].classe = "aehoo";//linha com problema
     
-    //if (c.distancia < maisVotadas[k].distancia)
-      //  swap(c, maisVotadas[k]);    
-    
-    for(int j = 1; j < k; j){        
-        classificacao key = maisVotadas[j];
-        for(i = j-1; (i > -1) && (maisVotadas[i].distancia < key.distancia); i--){
-            maisVotadas[i+1] = maisVotadas[i];
-        }
-        maisVotadas[i+1] = key;
-    }
+    show(v, k);
 }
 
 string classificar(ifstream& B, ifstream& X, int k){
-    int nro = 1;
+    int repfB = 0,
+        replX = 0,
+        replB = 0;
     
-                classificacao c;
+    classificacao c, topK[k];
+    c.distancia = 0.0f;
+    c.classe = "classe";
+    for (int i = 0; i < k; i++){
+        topK[i] = c;
+    }
+    
     string lineX;
     while(getline(X, lineX)){    
-        std::stringstream strX(lineX); 
+        replX++;
+        std::stringstream strX(lineX);        
         
         string lineB;
         while(getline(B, lineB)){
@@ -59,7 +66,7 @@ string classificar(ifstream& B, ifstream& X, int k){
             
             string attrB, attrX;            
             while (getline(strX, attrX, ',')){
-                   getline(strB, attrB, ',');                
+               getline(strB, attrB, ',');                
 
                 double  numX = atof(attrX.c_str()),
                         numB = atof(attrB.c_str());
@@ -69,15 +76,18 @@ string classificar(ifstream& B, ifstream& X, int k){
                 else
                     c.classe = attrB.c_str();
             }
-            
+
             strX.clear();
             strX.seekg(strX.beg);
+
+            insortion(topK, c, k);
+            cout << "LX: " << replX << "   FB: " << repfB << "   LB " << replB++ << endl;
         }
-        cout << "CLASS."<< nro++ << ": " << c.distancia << "|" << c.classe << "\n";        
-        cin.ignore();
-        
+
         B.clear();
         B.seekg(B.beg);
+        repfB++;
+        cin.ignore();
     }
     return "\n";
 }
