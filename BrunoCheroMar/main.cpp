@@ -26,47 +26,51 @@ using namespace std;
 struct classificacao{
     double distancia;
     string classe;
+    
+    bool operator<(const classificacao& c) const {
+        return distancia < c.distancia;
+    }
 };
 
-int show (classificacao v[], int k){
-    cout << "topK [";
-    for (int i = 0; i < k; i++)
-        std::printf(" %.1f ", v[i].distancia);
+int version = 0;
+
+int show (vector<classificacao> v){
+    cout << version++ << " topK [";
+    for(vector<classificacao>::iterator it = v.begin(); it < v.end(); it++)
+        cout << ' ' << it.base()->distancia << ' ';
     cout << "]\n";
 }
 
-void insortion(classificacao v[], classificacao c, int k){
-    cout << c.distancia << ", " << c.classe << endl;
-    if (c.distancia > v[k].distancia)
-        v[k].classe = "aehoo";//linha com problema
+vector<classificacao> insortion(vector<classificacao> v, classificacao c){    
+    if (c.distancia < v.back().distancia){
+        swap(c, v.back());
+        sort(v.begin(), v.end());
+    }
     
-    show(v, k);
+    return v;
 }
 
 string classificar(ifstream& B, ifstream& X, int k){
-    int repfB = 0,
-        replX = 0,
-        replB = 0;
+    classificacao c;
+    c.distancia = 999.0f;   c.classe = "classe";
     
-    classificacao c, topK[k];
-    c.distancia = 0.0f;
-    c.classe = "classe";
-    for (int i = 0; i < k; i++){
-        topK[i] = c;
-    }
+    vector<classificacao> topK;
+    while (topK.size() < k)
+        topK.push_back(c);
     
-    string lineX;
-    while(getline(X, lineX)){    
-        replX++;
-        std::stringstream strX(lineX);        
+    string  lineX, lineB,
+            attrX, attrB;
+    while(getline(X, lineX)){
+        std::stringstream strX(lineX);
         
-        string lineB;
+        classificacao c;    
+        c.distancia = 0;    c.classe = "classe";
+        
         while(getline(B, lineB)){
             std::stringstream strB(lineB);
             
-            string attrB, attrX;            
-            while (getline(strX, attrX, ',')){
-               getline(strB, attrB, ',');                
+            while (getline(strX, attrX, ',')){                
+                getline(strB, attrB, ',');
 
                 double  numX = atof(attrX.c_str()),
                         numB = atof(attrB.c_str());
@@ -80,15 +84,14 @@ string classificar(ifstream& B, ifstream& X, int k){
             strX.clear();
             strX.seekg(strX.beg);
 
-            insortion(topK, c, k);
-            cout << "LX: " << replX << "   FB: " << repfB << "   LB " << replB++ << endl;
+            topK = insortion(topK, c);
         }
 
         B.clear();
         B.seekg(B.beg);
-        repfB++;
-        cin.ignore();
     }
+    
+    show(topK);
     return "\n";
 }
 
